@@ -38,9 +38,9 @@ m_shipSprite.setPosition(l_gameLogic.shipPosition.x,l_gameLogic.shipPosition.y);
                 m_window.close();
 
             //l_gameLogic.getPosition(m_shipSprite.getPosition().x, m_shipSprite.getPosition().y);
-            l_gameLogic.shipControl(event, m_shipTexture.getSize().x, m_shipTexture.getSize().y,  windowWidth ,windowHeight);
-            m_shipSprite.setPosition(l_gameLogic.shipPosition.x,l_gameLogic.shipPosition.y);
-
+            l_gameLogic.shipControl(event, m_window, m_shipTexture, m_shipSprite);
+            //m_shipSprite.setPosition(l_gameLogic.shipPosition.x,l_gameLogic.shipPosition.y);
+            m_shipSprite.setPosition(l_gameLogic.shipControl(event, m_window, m_shipTexture, m_shipSprite));
         }
 
         l_gameDisplay.displayGame(m_window, m_spaceSprite, m_shipSprite);
