@@ -1,10 +1,10 @@
 #include "gamelogic.h"
 
 
-void GameLogic::InitialPosition(float widtShip, float heightShip, const int windowWidth, const int windowHeight)
+void GameLogic::InitialPosition(sf::RenderWindow &p_window, sf::Texture p_texture)
 {
-    shipPosition.x=(windowWidth-widtShip)/2;
-    shipPosition.y=windowHeight-heightShip;
+    shipPosition.x=(p_window.getSize().x-p_texture.getSize().x)/2;
+    shipPosition.y=p_window.getSize().y-p_texture.getSize().y;
 }
 
 void GameLogic::shipControl(sf::Event p_event, sf::RenderWindow &p_window, sf::Texture p_texture, sf::Sprite p_ship)
@@ -15,26 +15,22 @@ void GameLogic::shipControl(sf::Event p_event, sf::RenderWindow &p_window, sf::T
     {
         if(p_event.key.code == sf::Keyboard::Up && p_ship.getPosition().y>0)
         {
-           return p_ship.setPosition(p_ship.getPosition().x, p_ship.getPosition().y-step);
+           p_ship.setPosition(p_ship.getPosition().x, p_ship.getPosition().y-step);
         }
         if(p_event.key.code == sf::Keyboard::Down && p_ship.getPosition().y<=(p_window.getSize().y-p_texture.getSize().y-step))
         {
-            return p_ship.setPosition(p_ship.getPosition().x, p_ship.getPosition().y+step);
+            p_ship.setPosition(p_ship.getPosition().x, p_ship.getPosition().y+step);
         }
         if(p_event.key.code == sf::Keyboard::Left && p_ship.getPosition().x>0)
         {
-            return p_ship.setPosition(p_ship.getPosition().x-step, p_ship.getPosition().y);
+            p_ship.setPosition(p_ship.getPosition().x-step, p_ship.getPosition().y);
         }
-        if(p_event.key.code == sf::Keyboard::Right && p_ship.getPosition().y<=(p_window.getSize().x-p_texture.getSize().x-step))
+        if(p_event.key.code == sf::Keyboard::Right && p_ship.getPosition().x<=(p_window.getSize().x-p_texture.getSize().x-step))
         {
-            return p_ship.setPosition(p_ship.getPosition().x+step, p_ship.getPosition().y);
+            p_ship.setPosition(p_ship.getPosition().x+step, p_ship.getPosition().y);
         }
-
+        shipPosition=p_ship.getPosition();
     }
- }
 
-void GameLogic::getPosition(float x, float y)
-{
-    shipPosition.x = x;
-    shipPosition.y = y;
 }
+
