@@ -1,9 +1,8 @@
 #include "game.h"
-#include <iostream>
 
 void Game::createTextures()
 {
-    m_window.create(sf::VideoMode(windowWidth,windowHeight), "SFML works!");
+    m_window.create(sf::VideoMode(windowWidth,windowHeight, 16), "SHIPS WORKS");
 
     m_spaceTexture.loadFromFile("space.jpg");
 
@@ -12,6 +11,10 @@ void Game::createTextures()
     m_shipTexture.loadFromFile("DurrrSpaceShip.png");
 
     m_shipSprite.setTexture(m_shipTexture);
+
+    m_bulletTexture.loadFromFile("bullet.png");
+
+    m_bulletSprite.setTexture(m_bulletTexture);
 
 }
 
@@ -23,28 +26,28 @@ void Game::startGame()
 
 void Game::mainLoop()
 {
-GameDisplay l_gameDisplay;
-GameLogic l_gameLogic;
+    GameDisplay l_gameDisplay(m_window, m_spaceSprite, m_shipSprite, m_bulletSprite);
+    l_gameDisplay.setInitialPositionForObjects();
 
-l_gameLogic.InitialPosition(m_window, m_shipTexture);
-m_shipSprite.setPosition(l_gameLogic.shipPosition);
+    GameLogic l_gameLogic(m_window, m_spaceSprite, m_shipSprite, m_bulletSprite);
 
     while (m_window.isOpen())
     {
-        sf::Event event;
-        while (m_window.pollEvent(event))
+
+        while (m_window.pollEvent(m_event))
         {
-            if (event.type == sf::Event::Closed || (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)))
-                m_window.close();
+            closeWindow();
+            l_gameLogic.shipControl(m_event);
 
-            l_gameLogic.shipControl(event, m_window, m_shipTexture, m_shipSprite);
-            m_shipSprite.setPosition(l_gameLogic.shipPosition);
-
-            std::cout<<l_gameLogic.shipPosition.x<<" : "<<l_gameLogic.shipPosition.y<<std::endl;
+            l_gameLogic.bullet();
         }
 
-        l_gameDisplay.displayGame(m_window, m_spaceSprite, m_shipSprite);
-
-
+        l_gameDisplay.displayGame();
     }
+}
+
+void Game::closeWindow()
+{
+    if (m_event.type == sf::Event::Closed || (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)))
+        m_window.close();
 }

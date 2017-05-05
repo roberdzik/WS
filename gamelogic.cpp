@@ -1,36 +1,51 @@
 #include "gamelogic.h"
 
-
-void GameLogic::InitialPosition(sf::RenderWindow &p_window, sf::Texture p_texture)
+GameLogic::GameLogic(sf::RenderWindow &p_window, sf::Sprite &p_background, sf::Sprite &p_ship, sf::Sprite& p_bullet):m_window(p_window),
+                                                                                               m_background(p_background),
+                                                                                               m_ship(p_ship),
+                                                                                               m_bullet(p_bullet)
 {
-    shipPosition.x=(p_window.getSize().x-p_texture.getSize().x)/2;
-    shipPosition.y=p_window.getSize().y-p_texture.getSize().y;
+
 }
 
-void GameLogic::shipControl(sf::Event p_event, sf::RenderWindow &p_window, sf::Texture p_texture, sf::Sprite p_ship)
- {
-    const int step=20;
-
+void GameLogic::shipControl(sf::Event& p_event)
+{
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right) &&
+            m_ship.getPosition().x<=(m_window.getSize().x-m_ship.getLocalBounds().width-m_step))
+    {
+        m_ship.move(m_step,0);
+    }
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && m_ship.getPosition().x>0)
+    {
+        m_ship.move(-m_step,0);
+    }
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && m_ship.getPosition().y>0)
+    {
+        m_ship.move(0,-m_step);
+    }
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down) &&
+            m_ship.getPosition().y<=(m_window.getSize().y-m_ship.getLocalBounds().height-m_step))
+    {
+        m_ship.move(0,m_step);
+    }
     if(p_event.type == sf::Event::KeyPressed)
     {
-        if(p_event.key.code == sf::Keyboard::Up && p_ship.getPosition().y>0)
+        m_bullet.setPosition(m_ship.getPosition().x+(m_ship.getGlobalBounds().width-m_bullet.getGlobalBounds().width)/2,
+                             m_ship.getPosition().y);
+        if(p_event.key.code == sf::Keyboard::Space)
         {
-           p_ship.setPosition(p_ship.getPosition().x, p_ship.getPosition().y-step);
+            bullet();
         }
-        if(p_event.key.code == sf::Keyboard::Down && p_ship.getPosition().y<=(p_window.getSize().y-p_texture.getSize().y-step))
-        {
-            p_ship.setPosition(p_ship.getPosition().x, p_ship.getPosition().y+step);
-        }
-        if(p_event.key.code == sf::Keyboard::Left && p_ship.getPosition().x>0)
-        {
-            p_ship.setPosition(p_ship.getPosition().x-step, p_ship.getPosition().y);
-        }
-        if(p_event.key.code == sf::Keyboard::Right && p_ship.getPosition().x<=(p_window.getSize().x-p_texture.getSize().x-step))
-        {
-            p_ship.setPosition(p_ship.getPosition().x+step, p_ship.getPosition().y);
-        }
-        shipPosition=p_ship.getPosition();
     }
-
 }
 
+void GameLogic::bullet()
+{
+    if(m_bullet.getPosition().y>0)
+       m_bullet.move(0,10);
+
+
+
+    std::cout<<m_bullet.getPosition().x<<"  "<< m_ship.getPosition().x<<std::endl
+             <<m_bullet.getPosition().y<<"  "<< m_ship.getPosition().y<<std::endl<<std::endl;
+}
